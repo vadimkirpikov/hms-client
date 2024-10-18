@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
 import {Button, IconButton, Input, Td, Th} from "@chakra-ui/react";
 import {CheckIcon, DeleteIcon, EditIcon} from "@chakra-ui/icons";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import * as api from "../Api/ApiClient";
 import {getTypeForForm} from "../Other/HelpFunctions";
 
 const TableRow = ({entityName, entity, isHeader, onDelete, onEdit}) => {
@@ -22,11 +20,11 @@ const TableRow = ({entityName, entity, isHeader, onDelete, onEdit}) => {
         <>
             {(Object.keys(editableEntity)).map((field, index) => {
                 if (isHeader) {
-                    return <Th key={index} color={"white"} borderColor={"gray.800"}>{field}</Th>;
+                    return <Th key={index} color={"white"}>{field}</Th>;
                 }
 
                 return (
-                    <Td key={index} borderColor={"gray.800"} borderWidth={"2px"}>
+                    <Td key={index}>
                         {isEditing ? (
                             <Input
                                 type={getTypeForForm(editableEntity[field])}
@@ -40,7 +38,7 @@ const TableRow = ({entityName, entity, isHeader, onDelete, onEdit}) => {
                 );
             })}
             {!isHeader && (
-                <Td borderColor={"gray.800"} borderLeftWidth={"2px"}>
+                <Td>
                     <IconButton
                         icon={isEditing ? <CheckIcon/> : <EditIcon/>}
                         onClick={toggleEdit}

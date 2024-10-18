@@ -1,27 +1,19 @@
 import { Select } from '@chakra-ui/react'
 import {useState} from "react";
+import {translateToRu} from "../Other/HelpFunctions";
 
 
-export const TableSelector = () => {
-
-    const [ph, setPh] = useState('Select table');
+export const TableSelector = ({header, names}) => {
     const handleSelect = (event) => {
         const url = event.target.value;
-        setPh("pivo");
         window.location.href = url;
     }
 
     return (
-        <Select placeholder={ph} onChange={handleSelect}>
-            <option value={"/lodgers"}>Lodgers</option>
-            <option value={"/flats"}>Flats</option>
-            <option value={"/plots"}>Plots</option>
-            <option value={"/department-plots"}>DepartmentPlots</option>
-            <option value={"/ownerships"}>Ownerships</option>
-            <option value={"/houses"}>Houses</option>
-            <option value={"/services"}>Services</option>
-            <option value={"/departments"}>Departments</option>
-            <option value={"/rates"}>Rates</option>
+        <Select placeholder={header} onChange={handleSelect}>
+            {names.map((name) => (
+                <option key={name} value={`/${name}`}>{translateToRu(name)}</option>
+            ))}
         </Select>
     )
 }

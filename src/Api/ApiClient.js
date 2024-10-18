@@ -15,6 +15,9 @@ export const readEntities = async (entity, filter, order) => {
 }
 
 export const createEntity = async (entity, objectDto) => {
+    if (entity === "houses") {
+        entity = "house-and-flats";
+    }
     console.log("objectDto перед отправкой:", objectDto);
     const response = await fetch(`${API_URL}/${entity}/create`,
         {
