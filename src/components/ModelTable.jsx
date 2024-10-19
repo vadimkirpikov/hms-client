@@ -166,20 +166,12 @@ const ModelTable = () => {
             >
                 <TableSelector header={"Выбрать таблицу"} names={["lodgers", "houses", "rates", "services", "plots", "department-plots", "ownerships", "departments", "flats"]} />
                 <TableSelector header={"Выбрать отчет"} names={["rents", "departments-revenue", "suitability-of-plots"]} />
-                {["rents", "departments-revenue", "suitability-of-plots"].includes(entity) && <ReportFilterModal entities={allData.data} entityName={entity} handleSubmit={handleSettings} isOpen={report.isOpen} onClose={report.onClose} onOpen={report.onOpen} />}
+                {["rents", "departments-revenue", "suitability-of-plots"].includes(entity) && <ReportFilterModal entities={allData.data} entityName={entity} handleSubmit={handleSettings} isOpen={report.isOpen} onClose={report.onClose} onOpen={report.onOpen} currentFilter={settings.filter} currentOrderBy={settings.orderBy} />}
                 <IconButton icon={<PlusSquareIcon/>} onClick={createManage.onOpen} aria-label={"Add"} colorScheme={"teal"}/>
 
 
                 <FilterModal handleFilter={handleFilter} entityName={entity} entities={allData.data} currentFilter={settings.filter} />
                 <IconButton icon={<SettingsIcon/>} onClick={filterManage.onOpen} aria-label={"Filter"} colorScheme={"teal"}/>
-                {/*<Input*/}
-                {/*    type={"text"}*/}
-                {/*    placeholder={" settings.filter"}*/}
-                {/*    ref={editFilter}*/}
-                {/*    defaultValue={ settings.filter}*/}
-                {/*    borderColor={"gray.400"}*/}
-                {/*    borderWidth={"2px"}*/}
-                {/*/>*/}
             </Flex>
             <Box
                 sx={{

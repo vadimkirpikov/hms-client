@@ -23,9 +23,9 @@ const DynamicFilter = ({entityName, entities, currentFilter, changeFilter}) => {
         case "departments-revenue":
             return (<CheckboxFilter entities={entities} fieldName={"serviceId"} changeFilter={changeFilter} displayedName={"ID служб"} currentFilter={currentFilter} />);
         case "rents":
-            return (<CheckboxFilter entities={entities} fieldName={"houseAddress"} changeFilter={changeFilter} displayedName={"Адреса дома"} currentFilter={currentFilter} />);
-        case "suitability-of-plots":
-            return (<IntervalForm entities={entities} fieldName={"budget"} changeFilter={changeFilter} displayedName={"Бюджет"} currentFilter={currentFilter} />);
+            return (<CheckboxFilter entities={entities} fieldName={"houseId"} changeFilter={changeFilter} displayedName={"ID домов"} currentFilter={currentFilter} />);
+        case "lodger-plot":
+            return (<CheckboxFilter entities={entities} fieldName={"id"} changeFilter={changeFilter} displayedName={"Участок"} currentFilter={currentFilter} />);
         default:
             return null;
     }

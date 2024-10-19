@@ -37,7 +37,7 @@ const TableRow = ({entityName, entity, isHeader, onDelete, onEdit}) => {
                     </Td>
                 );
             })}
-            {!isHeader && (
+            {(!isHeader && !["rents", "departments-revenue", "suitability-of-plots"].includes(entityName)) && (
                 <Td>
                     <IconButton
                         icon={isEditing ? <CheckIcon/> : <EditIcon/>}
