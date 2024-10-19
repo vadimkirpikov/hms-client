@@ -24,7 +24,7 @@ const DynamicFilter = ({entityName, entities, currentFilter, changeFilter}) => {
             return (<CheckboxFilter entities={entities} fieldName={"serviceId"} changeFilter={changeFilter} displayedName={"ID служб"} currentFilter={currentFilter} />);
         case "rents":
             return (<CheckboxFilter entities={entities} fieldName={"houseId"} changeFilter={changeFilter} displayedName={"ID домов"} currentFilter={currentFilter} />);
-        case "lodger-plot":
+        case "lodger-plots":
             return (<CheckboxFilter entities={entities} fieldName={"id"} changeFilter={changeFilter} displayedName={"Участок"} currentFilter={currentFilter} />);
         default:
             return null;

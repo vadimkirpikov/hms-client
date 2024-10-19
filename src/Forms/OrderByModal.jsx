@@ -26,7 +26,7 @@ export const OrderByModal = ({ entity, isOpen, onClose, handleOrderBy, currentFi
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Filter entities</ModalHeader>
+                <ModalHeader>Сортировать</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <OrderByForm changeOrderByString={changeOrderByString} entity={entity} currentFilter={currentFilter} />

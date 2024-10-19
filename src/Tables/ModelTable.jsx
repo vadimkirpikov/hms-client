@@ -147,6 +147,7 @@ const ModelTable = () => {
     if (allData.isLoading) return <p>LoadingAll...</p>;
     if (isError || allData.isError) return <p>ERROR!</p>
 
+
     let displayedData = data;
     return (
         <>
@@ -165,9 +166,9 @@ const ModelTable = () => {
                 padding={4}
             >
                 <TableSelector header={"Выбрать таблицу"} names={["lodgers", "houses", "rates", "services", "plots", "department-plots", "ownerships", "departments", "flats"]} />
-                <TableSelector header={"Выбрать отчет"} names={["rents", "departments-revenue", "suitability-of-plots"]} />
-                {["rents", "departments-revenue", "suitability-of-plots"].includes(entity) && <ReportFilterModal entities={allData.data} entityName={entity} handleSubmit={handleSettings} isOpen={report.isOpen} onClose={report.onClose} onOpen={report.onOpen} currentFilter={settings.filter} currentOrderBy={settings.orderBy} />}
-                <IconButton icon={<PlusSquareIcon/>} onClick={createManage.onOpen} aria-label={"Add"} colorScheme={"teal"}/>
+                <TableSelector header={"Выбрать отчет"} names={["rents", "departments-revenue", "lodger-plots"]} />
+                {["rents", "departments-revenue", "lodger-plots"].includes(entity) && <ReportFilterModal entities={allData.data} entityName={entity} handleSubmit={handleSettings} isOpen={report.isOpen} onClose={report.onClose} onOpen={report.onOpen} currentFilter={settings.filter} currentOrderBy={settings.orderBy} />}
+                {!["rents", "departments-revenue", "lodger-plots"].includes(entity) && <IconButton icon={<PlusSquareIcon/>} onClick={createManage.onOpen} aria-label={"Add"} colorScheme={"teal"}/>}
 
 
                 <FilterModal handleFilter={handleFilter} entityName={entity} entities={allData.data} currentFilter={settings.filter} />

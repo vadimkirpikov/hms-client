@@ -30,6 +30,7 @@ const TableRow = ({entityName, entity, isHeader, onDelete, onEdit}) => {
                                 type={getTypeForForm(editableEntity[field])}
                                 defaultValue={editableEntity[field]}
                                 onChange={(e) => objectDto[field] = e.target.value}
+                                disabled={field === "id"}
                             />
                         ) : (
                             editableEntity[field]

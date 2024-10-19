@@ -15,7 +15,7 @@ export const translateToRu = (item) => {
         rates: "Тарифы",
         rents: "Квартплата",
         "departments-revenue": "Выручка отделов",
-        "suitability-of-plots": "Пригодность участков"
+        "lodger-plots": "Список жильцов на избирательный участок"
     }
     return dict[item];
 }
