@@ -1,38 +1,44 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Box, Button, Flex, IconButton, Input, Table, Tbody, Th, Thead, Tr, useToast } from "@chakra-ui/react";
+import {Box, Button, Flex, Heading, IconButton, Input, Table, Tbody, Th, Thead, Tr, useToast} from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as api from '../Api/ApiClient';
 import TableRow from "./TableRow";
 import { useParams } from "react-router-dom";
-import {AddIcon, MinusIcon, PlusSquareIcon, Search2Icon, useDisclosure} from "@chakra-ui/icons";
-import { CreateEntityForm } from "./CreateEntityForm";
-import {FilterEntityForm} from "./FilterEntitiesForm";
+import {AddIcon, MinusIcon, PlusSquareIcon, Search2Icon, SettingsIcon, useDisclosure} from "@chakra-ui/icons";
+import { CreateEntityForm } from "../Forms/CreateEntityForm";
+import {OrderByModal} from "../Forms/OrderByModal";
 import {TableSelector} from "./TableSelector";
-import HouseAndFlatsForm from "../Forms/HouseAndFlatsForm";
+import FilterModal from "../Forms/ModalFilterForm";
+import {translateToRu} from "../Other/HelpFunctions";
+import ReportFilterModal from "../Forms/ReportFilterModal";
 
 const ModelTable = () => {
     const { entity } = useParams();
-    const [filters, setFilters] = useState({ filter: "", orderBy: "" });
     const [flexHeight, setFlexHeight] = useState(100);
-    const [filter, setFilter] = useState("");
-    const [orderBy, setOrderBy] = useState("");
+    const [settings, setSettings] = useState({ filter: "",  orderBy: ""});
     const createManage = useDisclosure();
     const filterManage = useDisclosure();
+    const report = useDisclosure();
 
     const toast = useToast();
     const editFilter = useRef(null);
     const flexRef = useRef(null);
     const queryClient = useQueryClient();
-
+    const allData = useQuery({
+        queryKey: [entity, "all"],
+        queryFn:  () => api.readEntities(entity, "", ""),
+        onError: () => {
+            alert(`Failed to load all entities for: ${entity}`);},
+        retry: 0
+    });
     const { data, error, isLoading, isError } = useQuery({
-        queryKey: [entity, filter, orderBy],
-        queryFn: () => api.readEntities(entity, filter, orderBy),
+        queryKey: [entity,  settings.filter,  settings.orderBy],
+        queryFn: () => api.readEntities(entity,  settings.filter,  settings.orderBy),
         onError: () => {
             alert(`Failed to load entity: ${entity}`);
         },
         retry: 0
     });
-
     const deleteEntity = useMutation({
         mutationFn: (id) => api.deleteEntity(entity, id),
         onSuccess: async () => {
@@ -110,12 +116,16 @@ const ModelTable = () => {
         createEntity.mutate({ objectDto });
     };
 
-    const handleForm = () => {
-        setFilters({ filter: editFilter.current.values });
+    const handleFilter = (currentFilter) => {
+        setSettings(prev => ({...prev, filter: currentFilter}));
     };
 
     const handleOrderBy = (currentOrderBy) => {
-        setFilters({filter: editFilter.current.value, orderBy: currentOrderBy});
+        setSettings(prev => ({...prev, orderBy: currentOrderBy}));
+    }
+
+    const handleSettings = (filter, orderBy) => {
+        setSettings({filter: filter, orderBy: orderBy});
     }
 
     useEffect(() => {
@@ -132,13 +142,17 @@ const ModelTable = () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
-    console.log("f: ", filters.orderBy);
+    console.log("f: ",  settings.orderBy);
     if (isLoading) return <p>Loading...</p>;
+    if (allData.isLoading) return <p>LoadingAll...</p>;
+    if (isError || allData.isError) return <p>ERROR!</p>
+
+
     let displayedData = data;
     return (
         <>
             <CreateEntityForm entity={data[0]} entityName={entity} isOpen={createManage.isOpen} onClose={createManage.onClose} handleCreate={handleCreate} />
-            <FilterEntityForm entity={data[0]} isOpen={filterManage.isOpen} onClose={filterManage.onClose} handleOrderBy={handleOrderBy} currentFilter={filters.orderBy} />
+            <OrderByModal entity={data[0]} isOpen={filterManage.isOpen} onClose={filterManage.onClose} handleOrderBy={handleOrderBy} currentFilter={ settings.orderBy} />
             <Flex
                 ref={flexRef}
                 direction={['column', 'row']}
@@ -151,27 +165,14 @@ const ModelTable = () => {
                 zIndex={1}
                 padding={4}
             >
-                <TableSelector />
-                <IconButton icon={<PlusSquareIcon/>} onClick={createManage.onOpen} aria-label={"Add"}/>
-                <IconButton icon={<MinusIcon/>} onClick={filterManage.onOpen} aria-label={"Filter"}/>
-                <Input
-                    type={"text"}
-                    placeholder={"filter"}
-                    ref={editFilter}
-                    defaultValue={filters.filter}
-                    borderColor={"gray.400"}
-                    borderWidth={"2px"}
-                />
-                {/*<Input*/}
-                {/*    type={"text"}*/}
-                {/*    placeholder={"orderBy"}*/}
-                {/*    ref={editOrderBy}*/}
-                {/*    defaultValue={filters.orderBy}*/}
-                {/*    borderColor={"gray.400"}*/}
-                {/*    borderWidth={"2px"}*/}
-                {/*    margin={"20px"}*/}
-                {/*/>*/}
-                <IconButton colorScheme={"blue"} onClick={() => setFilter(editFilter.current.value)} icon={<Search2Icon />} variant={"ghost"} aria-label={"Search"} />
+                <TableSelector header={"Выбрать таблицу"} names={["lodgers", "houses", "rates", "services", "plots", "department-plots", "ownerships", "departments", "flats"]} />
+                <TableSelector header={"Выбрать отчет"} names={["rents", "departments-revenue", "lodger-plots"]} />
+                {["rents", "departments-revenue", "lodger-plots"].includes(entity) && <ReportFilterModal entities={allData.data} entityName={entity} handleSubmit={handleSettings} isOpen={report.isOpen} onClose={report.onClose} onOpen={report.onOpen} currentFilter={settings.filter} currentOrderBy={settings.orderBy} />}
+                {!["rents", "departments-revenue", "lodger-plots"].includes(entity) && <IconButton icon={<PlusSquareIcon/>} onClick={createManage.onOpen} aria-label={"Add"} colorScheme={"teal"}/>}
+
+
+                <FilterModal handleFilter={handleFilter} entityName={entity} entities={allData.data} currentFilter={settings.filter} />
+                <IconButton icon={<SettingsIcon/>} onClick={filterManage.onOpen} aria-label={"Filter"} colorScheme={"teal"}/>
             </Flex>
             <Box
                 sx={{
@@ -198,6 +199,7 @@ const ModelTable = () => {
                 width={"100%"}
                 marginTop={"50px"}
             >
+                <Heading textAlign={"center"}>{translateToRu(entity)}</Heading>
                 <Table variant={"simple"} borderColor="gray.300">
                     <Thead position={"sticky"} top={0} backgroundColor={"gray.800"} zIndex={1}>
                         <Tr borderBottom="2px" borderColor="gray.400">
